@@ -47,7 +47,8 @@ public class AmazonBedrockClient implements AiClient {
 				bedrockBody = objectMapper.writeValueAsString(new AmazonBedrockPromptClaude(bedrockPrompt.toString()));
 			}
 			else if (modelId.startsWith("ai21")) {
-				bedrockBody = objectMapper.writeValueAsString(new AmazonBedrockJurassicRequestBody(bedrockPrompt.toString()));
+				bedrockBody = objectMapper
+					.writeValueAsString(new AmazonBedrockJurassicRequestBody(bedrockPrompt.toString()));
 			}
 			var body = InvokeModelRequest.builder()
 				.modelId(modelId)
