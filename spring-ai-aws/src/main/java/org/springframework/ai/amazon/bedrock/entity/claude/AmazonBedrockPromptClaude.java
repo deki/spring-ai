@@ -41,7 +41,7 @@ public class AmazonBedrockPromptClaude {
 	}
 
 	public String getPrompt() {
-		return "\n\nHuman:%s\n\nAnswer:".formatted(prompt);
+		return "\n\nHuman: %s\n\nAssistant:".formatted(prompt);
 	}
 
 	public void setPrompt(String prompt) {
