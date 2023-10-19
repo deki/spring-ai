@@ -15,15 +15,12 @@ import org.springframework.ai.client.Generation;
 import org.springframework.ai.prompt.Prompt;
 import org.springframework.ai.prompt.messages.Message;
 import software.amazon.awssdk.core.SdkBytes;
-import software.amazon.awssdk.services.bedrock.BedrockClient;
-import software.amazon.awssdk.services.bedrock.model.*;
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient;
 import software.amazon.awssdk.services.bedrockruntime.model.*;
 
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class AmazonBedrockClient implements AiClient {
 
@@ -40,9 +37,10 @@ public class AmazonBedrockClient implements AiClient {
 		try {
 			StringBuilder bedrockPrompt = createBedrockPrompt(prompt);
 			String bedrockBody = "";
+
 			if (modelId.startsWith("amazon")) {
 				bedrockBody = objectMapper.writeValueAsString(new AmazonBedrockPromptTitan(bedrockPrompt.toString(),
-						new AmazonBedrockTitanTextGenerationConfig())); // FIX textGenerationConfig doesn't work for amazon.titan-embed-text-v1
+						new AmazonBedrockTitanTextGenerationConfig()));
 			}
 			else if (modelId.startsWith("anthropic")) {
 				bedrockBody = objectMapper.writeValueAsString(new AmazonBedrockPromptClaude(bedrockPrompt.toString()));
@@ -109,4 +107,5 @@ public class AmazonBedrockClient implements AiClient {
 	public void setModelId(String modelId) {
 		this.modelId = modelId;
 	}
+
 }
