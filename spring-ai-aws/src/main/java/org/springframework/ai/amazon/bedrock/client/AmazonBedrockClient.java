@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ai.amazon.bedrock.entity.ai21labs.AmazonBedrockJurassicRequestBody;
 import org.springframework.ai.amazon.bedrock.entity.claude.AmazonBedrockModelResponseClaude;
 import org.springframework.ai.amazon.bedrock.entity.claude.AmazonBedrockPromptClaude;
 import org.springframework.ai.amazon.bedrock.entity.titan.AmazonBedrockPromptTitan;
@@ -44,6 +45,9 @@ public class AmazonBedrockClient implements AiClient {
 			}
 			else if (modelId.startsWith("anthropic")) {
 				bedrockBody = objectMapper.writeValueAsString(new AmazonBedrockPromptClaude(bedrockPrompt.toString()));
+			}
+			else if (modelId.startsWith("ai21")) {
+				bedrockBody = objectMapper.writeValueAsString(new AmazonBedrockJurassicRequestBody(bedrockPrompt.toString()));
 			}
 			var body = InvokeModelRequest.builder()
 				.modelId(modelId)
