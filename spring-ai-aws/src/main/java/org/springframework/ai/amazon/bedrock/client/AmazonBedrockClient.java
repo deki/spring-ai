@@ -29,33 +29,11 @@ public class AmazonBedrockClient implements AiClient {
 
 	private static final Logger logger = LoggerFactory.getLogger(AmazonBedrockClient.class);
 
-	private final BedrockClient bedrockClient = BedrockClient.create();
-
 	private final BedrockRuntimeClient bedrockRuntimeClient = BedrockRuntimeClient.create();
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
-	private final String modelId;
-
-	public AmazonBedrockClient(String modelId, Double temperature) {
-		this.modelId = modelId;
-		ListFoundationModelsResponse listFoundationModelsResponse = bedrockClient
-			.listFoundationModels(ListFoundationModelsRequest.builder().build());
-		var modelFound = false;
-		for (FoundationModelSummary modelSummary : listFoundationModelsResponse.modelSummaries()) {
-			if (modelId.equals(modelSummary.modelId())) {
-				modelFound = true;
-				break;
-			}
-		}
-		if (!modelFound) {
-			throw new IllegalArgumentException("Model ID " + modelId + "not in list of models. Available models: "
-					+ listFoundationModelsResponse.modelSummaries()
-						.stream()
-						.map(FoundationModelSummary::modelId)
-						.collect(Collectors.joining(",")));
-		}
-	}
+	private String modelId;
 
 	@Override
 	public AiResponse generate(Prompt prompt) {
@@ -64,7 +42,7 @@ public class AmazonBedrockClient implements AiClient {
 			String bedrockBody = "";
 			if (modelId.startsWith("amazon")) {
 				bedrockBody = objectMapper.writeValueAsString(new AmazonBedrockPromptTitan(bedrockPrompt.toString(),
-						new AmazonBedrockTitanTextGenerationConfig()));
+						new AmazonBedrockTitanTextGenerationConfig())); // FIX textGenerationConfig doesn't work for amazon.titan-embed-text-v1
 			}
 			else if (modelId.startsWith("anthropic")) {
 				bedrockBody = objectMapper.writeValueAsString(new AmazonBedrockPromptClaude(bedrockPrompt.toString()));
@@ -124,4 +102,11 @@ public class AmazonBedrockClient implements AiClient {
 		return bedrockPrompt;
 	}
 
+	public String getModelId() {
+		return modelId;
+	}
+
+	public void setModelId(String modelId) {
+		this.modelId = modelId;
+	}
 }
